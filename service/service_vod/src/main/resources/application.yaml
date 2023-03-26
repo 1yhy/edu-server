@@ -23,6 +23,8 @@ aliyun:
     file:
       keyid: LTAI5t8wX9VSQCT3NdjFyWEq
       keysecret: 2I9vO7LkZ44731hOnzQ0z8elW1Vr1A
+      regionid: cn-shanghai
+
 
   cloud:
     nacos:

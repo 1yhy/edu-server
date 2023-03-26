@@ -177,16 +177,14 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         }else {
             List<EduCourse> pCourseList = baseMapper.selectList(new QueryWrapper<EduCourse>().eq("subject_parent_id", eduCourse.getSubjectParentId()).ne("id",courseId));
             List<String> collect = courseList.stream().map(item -> item.getId()).collect(Collectors.toList());
-            pCourseList.stream().map(item -> {
-                if(!collect.contains(item.getId())){
-                    courseList.add(item);
+            for (int i = 0; i < pCourseList.size(); i++) {
+                if(collect.size() == 0 || !collect.contains(pCourseList.get(i).getId())){
+                    courseList.add(pCourseList.get(i));
                 }
-                if(courseList.size() == 4) {
-                    return courseList;
+                if(courseList.size() > 4){
+                    break;
                 }
-                return courseList;
-            });
-
+            }
             return courseList;
         }
 

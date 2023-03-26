@@ -107,6 +107,7 @@ public class CourseFrontController {
     @GetMapping("getRelativeCourse/{courseId}")
     public R getRelativeCourse(@PathVariable String courseId){
         List<EduCourse> relativeCourse = courseService.getRelativeCourse(courseId);
+        System.err.println(relativeCourse);
         return R.ok().data("relativeCourse",relativeCourse);
     }
 }
