@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 43.139.73.193:8848
+        file-extension: yaml
+        namespace: cc4e4a1d-6e94-4829-812a-0591a9e8d7bf
+      discovery:
+        server-addr: 43.139.73.193:8848
+  application:
+    name: service-cms

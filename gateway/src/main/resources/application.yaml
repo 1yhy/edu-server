@@ -1,0 +1,59 @@
+server:
+  port: 8222
+
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 43.139.73.193:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service-acl
+          uri: lb://service-acl
+          predicates:
+            - Path=/*/acl/**
+
+        - id: service-edu
+          uri: lb://service-edu
+          predicates:
+            - Path=/eduservice/**
+
+        - id: service-ucenter
+          uri: lb://service-ucenter
+          predicates:
+            - Path=/educenter/**
+
+        - id: service-cms
+          uri: lb://service-cms
+          predicates:
+            - Path=/educms/**
+
+        - id: service-msm
+          uri: lb://service-msm
+          predicates:
+            - Path=/edumsm/**
+
+        - id: service-order
+          uri: lb://service-order
+          predicates:
+            - Path=/eduorder/**
+
+        - id: service-oss
+          uri: lb://service-oss
+          predicates:
+            - Path=/eduoss/**
+
+        - id: service-statistic
+          uri: lb://service-statistic
+          predicates:
+            - Path=/staservice/**
+
+        - id: service-vod
+          uri: lb://service-vod
+          predicates:
+            - Path=/eduvod/**

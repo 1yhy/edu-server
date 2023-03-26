@@ -1,0 +1,35 @@
+# 端口号
+server:
+  port: 8003
+
+spring:
+  application:
+    name: service-vod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://43.139.73.193:3306/edu?serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+aliyun:
+  vod:
+    file:
+      keyid: LTAI5t8wX9VSQCT3NdjFyWEq
+      keysecret: 2I9vO7LkZ44731hOnzQ0z8elW1Vr1A
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 43.139.73.193:8848
+
+mybatis-plus:
+  mapper-locations: com/example/aclservice/mapper/xml/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
