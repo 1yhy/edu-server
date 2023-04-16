@@ -2,6 +2,7 @@ package com.example.eduorder.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.eduorder.client.EduClient;
 import com.example.eduorder.entity.Order;
 import com.example.eduorder.entity.PayLog;
 import com.example.eduorder.mapper.PayLogMapper;
@@ -30,6 +31,8 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private EduClient eduClient;
     @Override
     public Map createNative(String orderNo) {
         try {
@@ -108,6 +111,9 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
 
         order.setStatus(1);
         orderService.updateById(order);
+
+        // 课程购买数量加一
+        eduClient.updateCourseBuyCount(order.getCourseId());
 
         PayLog payLog = new PayLog();
         payLog.setOrderNo(order.getOrderNo());//支付订单号

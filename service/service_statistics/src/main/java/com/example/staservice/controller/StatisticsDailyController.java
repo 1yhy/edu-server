@@ -30,6 +30,28 @@ public class StatisticsDailyController {
         return R.ok();
     }
 
+    // 更新注册人数
+    @PostMapping("addOrUpdateRegisterCount/{day}")
+    public R addOrUpdateRegisterCount(@PathVariable String day){
+        staService.addOrUpdateRegisterCount(day);
+        return R.ok();
+    }
+
+    // 更新登录人数
+    @PostMapping("addOrUpdateLoginCount/{day}")
+    public R addOrUpdateLoginCount(@PathVariable String day){
+        staService.addOrUpdateLoginCount(day);
+        return R.ok();
+    }
+
+
+    // 更新视频观看人数
+    @PostMapping("addOrUpdateVideoViewCount/{day}")
+    public R addOrUpdateVideoViewCount(@PathVariable String day){
+        staService.addOrUpdateVideoViewCount(day);
+        return R.ok();
+    }
+
     @GetMapping("showData/{type}/{begin}/{end}")
     public R showData(@PathVariable String type,@PathVariable String begin,@PathVariable String end){
        Map<String,Object> map = staService.getShowData(type,begin,end);

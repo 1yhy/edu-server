@@ -16,4 +16,11 @@ public interface StatisticsDailyService extends IService<StatisticsDaily> {
     void registerCount(String day);
 
     Map<String, Object> getShowData(String type, String begin, String end);
+
+
+    void addOrUpdateRegisterCount(String day);
+
+    void addOrUpdateLoginCount(String day);
+
+    void addOrUpdateVideoViewCount(String day);
 }

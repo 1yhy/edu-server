@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@ComponentScan(basePackages={"com.example"})
+@ComponentScan({"com.example"})
 @MapperScan("com.example.eduorder.mapper")
 public class OrderApplication {
     public static void main(String[] args) {

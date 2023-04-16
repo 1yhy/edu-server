@@ -47,6 +47,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-sdk-vod-upload</artifactId>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -17,4 +17,6 @@ public interface EduSubjectService extends IService<EduSubject> {
     void saveSubject(MultipartFile file,EduSubjectService subjectService);
 
     List<OneSubject> getAllSubject();
+
+    List<OneSubject> getAllFrontSubject();
 }

@@ -1,18 +1,22 @@
 package com.example.educenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.commonutils.JwtUtils;
+import com.example.educenter.client.StatisticClient;
 import com.example.educenter.entity.UcenterMember;
 import com.example.educenter.entity.vo.RegisterVo;
 import com.example.educenter.mapper.UcenterMemberMapper;
 import com.example.educenter.service.UcenterMemberService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.servicebase.exceptionhandler.EduException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * <p>
@@ -27,6 +31,9 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
 
     @Autowired
     private RedisTemplate<String, String> template;
+
+    @Autowired
+    private StatisticClient statisticClient;
 
     @Override
     public String login(UcenterMember member) {
@@ -56,6 +63,10 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         }
 
         String jwtToken = JwtUtils.getJwtToken(mobileMember.getId(), mobileMember.getNickname());
+        // 登录统计人数加一
+        Date date = new Date();
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+        statisticClient.addOrUpdateLoginCount(simpleFormat.format(date));
         return jwtToken;
     }
 
@@ -86,6 +97,10 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
             member.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
             member.setIsDisabled(false);
             member.setAvatar("https://img1.baidu.com/it/u=2400787025,2443994425&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500");
+            // 注册统计人数加一
+            Date date = new Date();
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+            statisticClient.addOrUpdateRegisterCount(simpleFormat.format(date));
             return baseMapper.insert(member) == 1;
         }
 

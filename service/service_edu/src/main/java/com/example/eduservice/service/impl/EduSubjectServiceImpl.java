@@ -42,9 +42,51 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         }
     }
 
+
+    // 后台：查询所有课程分类
     @Override
     public List<OneSubject> getAllSubject() {
-       //查询所有有课程的一级和二级分类id
+        //查询所有课程的一级和二级分类
+        QueryWrapper<EduSubject> wrapperOne = new QueryWrapper<>();
+        wrapperOne.eq("parent_id","0");
+        List<EduSubject> oneSubjectList = baseMapper.selectList(wrapperOne);
+
+        QueryWrapper<EduSubject> wrapperTwo = new QueryWrapper<>();
+        wrapperTwo.ne("parent_id","0");
+        List<EduSubject> twoSubjectList = baseMapper.selectList(wrapperTwo);
+
+        return getSubjects(oneSubjectList, twoSubjectList);
+    }
+
+    private static List<OneSubject> getSubjects(List<EduSubject> oneSubjectList, List<EduSubject> twoSubjectList) {
+        //最终集合
+        List<OneSubject> finalSubjectList = new ArrayList<>();
+
+        for (int i = 0; i < oneSubjectList.size(); i++) {
+            EduSubject eduSubject = oneSubjectList.get(i);
+            OneSubject oneSubject = new OneSubject();
+            BeanUtils.copyProperties(eduSubject,oneSubject);
+            finalSubjectList.add(oneSubject);
+
+            List<TwoSubject> twoFinalSubjectList = new ArrayList<>();
+            for (int m = 0; m < twoSubjectList.size(); m++) {
+                EduSubject tSubject = twoSubjectList.get(m);
+                if(tSubject.getParentId().equals(eduSubject.getId())){
+                    TwoSubject twoSubject=new TwoSubject();
+                    BeanUtils.copyProperties(tSubject,twoSubject);
+                    twoFinalSubjectList.add(twoSubject);
+                }
+            }
+            oneSubject.setChildren(twoFinalSubjectList);
+        }
+
+        return finalSubjectList;
+    }
+
+    //查询所有前台课程分类
+    @Override
+    public List<OneSubject> getAllFrontSubject() {
+        //查询所有有课程的一级和二级分类id
         QueryWrapper<EduCourse> oneSubjectWrapper = new QueryWrapper<>();
         oneSubjectWrapper.select("subject_parent_id");
         List<String> oneSubjectIds = eduCourseService.list(oneSubjectWrapper).stream().map(EduCourse::getSubjectParentId).distinct().collect(Collectors.toList());
@@ -66,28 +108,6 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         List<EduSubject> twoSubjectList = baseMapper.selectList(wrapperTwo);
 
         //最终集合
-        List<OneSubject> finalSubjectList = new ArrayList<>();
-
-        for (int i = 0; i < oneSubjectList.size(); i++) {
-            EduSubject eduSubject = oneSubjectList.get(i);
-            OneSubject oneSubject = new OneSubject();
-//            oneSubject.setId(eduSubject.getId());
-//            oneSubject.setTitle(eduSubject.getTitle());
-            BeanUtils.copyProperties(eduSubject,oneSubject);
-            finalSubjectList.add(oneSubject);
-
-            List<TwoSubject> twoFinalSubjectList = new ArrayList<>();
-            for (int m = 0; m < twoSubjectList.size(); m++) {
-                EduSubject tSubject = twoSubjectList.get(m);
-                if(tSubject.getParentId().equals(eduSubject.getId())){
-                    TwoSubject twoSubject=new TwoSubject();
-                    BeanUtils.copyProperties(tSubject,twoSubject);
-                    twoFinalSubjectList.add(twoSubject);
-                }
-            }
-            oneSubject.setChildren(twoFinalSubjectList);
-        }
-
-        return finalSubjectList;
+        return getSubjects(oneSubjectList, twoSubjectList);
     }
 }

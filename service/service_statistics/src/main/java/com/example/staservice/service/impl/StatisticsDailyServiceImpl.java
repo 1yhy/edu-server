@@ -2,14 +2,12 @@ package com.example.staservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.commonutils.R;
-import com.example.commonutils.ordervo.UcenterMemberOrder;
 import com.example.staservice.client.UcenterClient;
 import com.example.staservice.entity.StatisticsDaily;
 import com.example.staservice.mapper.StatisticsDailyMapper;
 import com.example.staservice.service.StatisticsDailyService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import javafx.beans.property.Property;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,4 +83,56 @@ public class StatisticsDailyServiceImpl extends ServiceImpl<StatisticsDailyMappe
         resultMap.put("numList",numList);
         return resultMap;
     }
+
+    // 更改注册人数
+    @Override
+    public void addOrUpdateRegisterCount(String day) {
+        LambdaQueryWrapper<StatisticsDaily> lqw =new LambdaQueryWrapper<>();
+        lqw.eq(StatisticsDaily::getDateCalculated,day);
+        StatisticsDaily sta = baseMapper.selectOne(lqw);
+        if(sta==null){
+            sta =new StatisticsDaily();
+            sta.setRegisterNum(1);
+            sta.setDateCalculated(day);
+            baseMapper.insert(sta);
+        }else{
+            sta.setRegisterNum(sta.getRegisterNum()+1);
+            baseMapper.update(sta,lqw);
+        }
+    }
+
+    // 更改登录人数
+    @Override
+    public void addOrUpdateLoginCount(String day) {
+        LambdaQueryWrapper<StatisticsDaily> lqw =new LambdaQueryWrapper<>();
+        lqw.eq(StatisticsDaily::getDateCalculated,day);
+        StatisticsDaily sta = baseMapper.selectOne(lqw);
+        if(sta==null){
+            sta =new StatisticsDaily();
+            sta.setLoginNum(1);
+            sta.setDateCalculated(day);
+            baseMapper.insert(sta);
+        }else{
+            sta.setLoginNum(sta.getLoginNum()+1);
+            baseMapper.update(sta,lqw);
+        }
+    }
+
+    // 更改视频观看人数
+    @Override
+    public void addOrUpdateVideoViewCount(String day) {
+        LambdaQueryWrapper<StatisticsDaily> lqw =new LambdaQueryWrapper<>();
+        lqw.eq(StatisticsDaily::getDateCalculated,day);
+        StatisticsDaily sta = baseMapper.selectOne(lqw);
+        if(sta==null){
+            sta =new StatisticsDaily();
+            sta.setVideoViewNum(1);
+            sta.setDateCalculated(day);
+            baseMapper.insert(sta);
+        }else{
+            sta.setVideoViewNum(sta.getVideoViewNum()+1);
+            baseMapper.update(sta,lqw);
+        }
+    }
+
 }

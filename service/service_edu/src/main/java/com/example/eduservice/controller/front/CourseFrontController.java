@@ -6,6 +6,7 @@ import com.example.commonutils.JwtUtils;
 import com.example.commonutils.R;
 import com.example.commonutils.ordervo.CourseWebVoOrder;
 import com.example.eduservice.client.OrderClient;
+import com.example.eduservice.client.StatisticClient;
 import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.EduVideo;
 import com.example.eduservice.entity.chapter.ChapterVo;
@@ -20,9 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Date;
 /**
  * The type Course front controller.
  */
@@ -41,6 +43,9 @@ public class CourseFrontController {
     private EduChapterService chapterService;
     @Autowired
     private OrderClient orderClient;
+
+    @Autowired
+    private StatisticClient statisticClient;
 
     /**
      * Gets front course list.
@@ -67,7 +72,13 @@ public class CourseFrontController {
      */
     @GetMapping("getFrontCourseInfo/{courseId}")
     public R getFrontCourseInfo(@PathVariable String courseId, HttpServletRequest request){
-       CourseWebVo courseWebVo= courseService.getBaseCourseInfo(courseId);
+       // 课程浏览数量统计
+        EduCourse eduCourse = courseService.getById(courseId);
+        eduCourse.setViewCount(eduCourse.getViewCount()+1);
+        courseService.updateById(eduCourse);
+
+        // 课程信息实体
+        CourseWebVo courseWebVo= courseService.getBaseCourseInfo(courseId);
         List<ChapterVo> chapterVoList = chapterService.getChapterVideoByCourseId(courseId);
         boolean isBuy = false;
         if(!StringUtils.isEmpty(JwtUtils.getMemberIdByJwtToken(request))){
@@ -101,6 +112,14 @@ public class CourseFrontController {
         LambdaQueryWrapper<EduVideo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(EduVideo::getVideoSourceId,id);
         EduVideo video = eduVideoService.getOne(wrapper);
+        // 播放次数加一
+        video.setPlayCount(video.getPlayCount()+1);
+        eduVideoService.updateById(video);
+        // 统计视频播放量加一
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String day = sdf.format(date);
+        statisticClient.addOrUpdateVideoViewCount(day);
         return R.ok().data("video",video);
     }
 
@@ -109,5 +128,13 @@ public class CourseFrontController {
         List<EduCourse> relativeCourse = courseService.getRelativeCourse(courseId);
         System.err.println(relativeCourse);
         return R.ok().data("relativeCourse",relativeCourse);
+    }
+
+    // 更新课程购买数量
+    @PostMapping("updateCourseBuyCount/{id}")
+    public R updateCourseBuyCount(@PathVariable String id){
+        EduCourse eduCourse = courseService.getById(id);
+        eduCourse.setBuyCount(eduCourse.getBuyCount()+1);
+        return R.ok();
     }
 }
