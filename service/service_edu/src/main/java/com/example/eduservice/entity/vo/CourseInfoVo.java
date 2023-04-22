@@ -36,6 +36,9 @@ public class CourseInfoVo implements Serializable {
     @ApiModelProperty(value = "课程封面图片路径")
     private String cover;
 
+    @ApiModelProperty(value = "课程课件路径")
+    private String resources;
+
     @ApiModelProperty(value = "课程简介")
     private String description;
 }

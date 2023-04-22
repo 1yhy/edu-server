@@ -2,6 +2,7 @@ package com.example.eduservice.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.commonutils.model.dto.CategoryDTO;
 import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.frontvo.CourseFrontVo;
 import com.example.eduservice.entity.frontvo.CourseWebVo;
@@ -33,4 +34,8 @@ public interface EduCourseService extends IService<EduCourse> {
     CourseWebVo getBaseCourseInfo(String courseId);
 
     List<EduCourse> getRelativeCourse(String courseId);
+
+  void report();
+
+    List<CategoryDTO> listCategories();
 }

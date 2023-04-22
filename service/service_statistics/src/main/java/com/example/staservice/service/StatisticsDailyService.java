@@ -1,7 +1,8 @@
 package com.example.staservice.service;
 
-import com.example.staservice.entity.StatisticsDaily;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.staservice.entity.StatisticsDaily;
+import com.example.staservice.model.dto.AdminInfoDTO;
 
 import java.util.Map;
 
@@ -13,7 +14,8 @@ import java.util.Map;
  */
 public interface StatisticsDailyService extends IService<StatisticsDaily> {
 
-    void registerCount(String day);
+    // 每日访问量
+    void viewCountDaily(String day);
 
     Map<String, Object> getShowData(String type, String begin, String end);
 
@@ -23,4 +25,6 @@ public interface StatisticsDailyService extends IService<StatisticsDaily> {
     void addOrUpdateLoginCount(String day);
 
     void addOrUpdateVideoViewCount(String day);
+
+    AdminInfoDTO getAdminInfo();
 }

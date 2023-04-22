@@ -6,11 +6,9 @@ import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.EduTeacher;
 import com.example.eduservice.service.EduCourseService;
 import com.example.eduservice.service.EduTeacherService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +21,14 @@ public class IndexFrontController {
 
     @Autowired
     private EduTeacherService teacherService;
+
+    @ApiOperation(value = "上报访客信息")
+    @PostMapping("/report")
+    public R report() {
+        courseService.report();
+        return R.ok();
+    }
+
     @GetMapping("index")
     public R index(){
         QueryWrapper<EduCourse> courseWrapper = new QueryWrapper<>();

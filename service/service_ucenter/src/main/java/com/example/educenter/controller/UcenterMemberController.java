@@ -1,6 +1,7 @@
 package com.example.educenter.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.commonutils.JwtUtils;
 import com.example.commonutils.R;
 import com.example.commonutils.ordervo.UcenterMemberOrder;
@@ -41,6 +42,8 @@ public class UcenterMemberController {
         }
     }
 
+
+
     @GetMapping("getUserInfo")
     public R getUserInfo(HttpServletRequest request){
         String memberId = JwtUtils.getMemberIdByJwtToken(request);
@@ -60,6 +63,13 @@ public class UcenterMemberController {
     public R countRegister(@PathVariable String day){
         Integer count = memberService.countRegister(day);
         return R.ok().data("countRegister",count);
+    }
+
+    @GetMapping("userCount")
+    public Integer userCount(){
+        QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
+        wrapper.eq("is_deleted",0);
+        return memberService.count(wrapper);
     }
 }
 

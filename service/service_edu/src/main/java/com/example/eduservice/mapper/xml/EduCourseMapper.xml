@@ -26,4 +26,10 @@
                            left outer join edu_subject es2 on ec.subject_id=es2.id
         where ec.id=#{courseId}
     </select>
+
+    <select id="listCategories" resultType="com.example.commonutils.model.dto.CategoryDTO">
+        SELECT ec.subject_id as id, es.title as categoryName,count(*) as lessonCount FROM edu_course ec
+        left outer join edu_subject es  on ec.subject_id=es.id
+        GROUP BY ec.subject_id
+    </select>
 </mapper>

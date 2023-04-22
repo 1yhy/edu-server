@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.staservice.mapper.StatisticsDailyMapper">
-
+    <select id="listUniqueViews" resultType="com.example.staservice.model.dto.UniqueViewDTO">
+        SELECT DATE_FORMAT(gmt_create, "%Y-%m-%d") as `day`,
+               view_count
+        FROM `statistics_daily`
+        WHERE gmt_create &gt; #{startTime}
+          AND gmt_create &lt;= #{endTime}
+        ORDER BY gmt_create
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ package com.example.staservice.controller;
 
 
 import com.example.commonutils.R;
+import com.example.staservice.model.dto.AdminInfoDTO;
 import com.example.staservice.service.StatisticsDailyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,9 +25,9 @@ public class StatisticsDailyController {
     @Autowired
     private StatisticsDailyService staService;
 
-    @PostMapping("registerCount/{day}")
+    @PostMapping("viewCountDaily/{day}")
     public R registerCount(@PathVariable String day){
-        staService.registerCount(day);
+        staService.viewCountDaily(day);
         return R.ok();
     }
 
@@ -56,6 +57,12 @@ public class StatisticsDailyController {
     public R showData(@PathVariable String type,@PathVariable String begin,@PathVariable String end){
        Map<String,Object> map = staService.getShowData(type,begin,end);
        return R.ok().data(map);
+    }
+
+    @GetMapping("adminIndexStatistic")
+    public R adminIndexStatistic(){
+        AdminInfoDTO adminInfo = staService.getAdminInfo();
+        return R.ok().data("adminInfo",adminInfo);
     }
 }
 

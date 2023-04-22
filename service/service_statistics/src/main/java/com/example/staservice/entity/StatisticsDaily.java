@@ -2,18 +2,16 @@ package com.example.staservice.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-
-import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -41,6 +39,9 @@ public class StatisticsDaily implements Serializable {
 
     @ApiModelProperty(value = "登录人数")
     private Integer loginNum;
+
+    @ApiModelProperty(value = "每日访问量")
+    private Integer viewCount;
 
     @ApiModelProperty(value = "每日播放视频数")
     private Integer videoViewNum;

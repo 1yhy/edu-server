@@ -1,7 +1,12 @@
 package com.example.staservice.mapper;
 
-import com.example.staservice.entity.StatisticsDaily;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.staservice.entity.StatisticsDaily;
+import com.example.staservice.model.dto.UniqueViewDTO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -11,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface StatisticsDailyMapper extends BaseMapper<StatisticsDaily> {
 
+  List<UniqueViewDTO> listUniqueViews(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

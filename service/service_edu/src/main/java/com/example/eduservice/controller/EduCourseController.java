@@ -4,6 +4,8 @@ package com.example.eduservice.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.commonutils.R;
+import com.example.commonutils.model.dto.CategoryDTO;
+import com.example.commonutils.model.dto.LessonViewDTO;
 import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.vo.CourseInfoVo;
 import com.example.eduservice.entity.vo.CoursePublishVo;
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -49,12 +52,6 @@ public class EduCourseController {
         return R.ok().data("total", total).data("rows", records);
     }
 
-
-//    @GetMapping
-//    public R getCourseList(){
-//        List<EduCourse> list=courseService.list(null);
-//        return R.ok().data("list",list);
-//    }
 
     @PostMapping("addCourseInfo")
     public R addCourseInfo(@RequestBody CourseInfoVo courseInfoVo) {
@@ -94,6 +91,34 @@ public class EduCourseController {
     public R deleteCourse(@PathVariable String courseId){
         courseService.removeCourse(courseId);
         return R.ok();
+    }
+
+    @GetMapping("lessonCount")
+    public Integer lessonCount(){
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.eq("status","Normal");
+        return courseService.count(wrapper);
+    }
+
+    // 课程分类列表
+    @GetMapping("listCategories")
+    public List<CategoryDTO> listCategories() {
+        return courseService.listCategories();
+    }
+
+    // 课程浏览量统计
+    @GetMapping("lessonViewCount")
+    public List<LessonViewDTO> lessonViewCount() {
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.eq("status","Normal").select("id","title","view_count");
+        List<LessonViewDTO> lessonViewCountDTOS = courseService.list(wrapper).stream().map(course -> {
+            LessonViewDTO lessonViewCountDTO = new LessonViewDTO();
+            lessonViewCountDTO.setId(course.getId());
+            lessonViewCountDTO.setName(course.getTitle());
+            lessonViewCountDTO.setViewsCount(Math.toIntExact(course.getViewCount()));
+            return lessonViewCountDTO;
+        }).collect(Collectors.toList());
+        return lessonViewCountDTOS;
     }
 }
 

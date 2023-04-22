@@ -1,8 +1,10 @@
 package com.example.eduservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.commonutils.model.dto.CategoryDTO;
 import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.EduCourseDescription;
 import com.example.eduservice.entity.frontvo.CourseFrontVo;
@@ -10,21 +12,27 @@ import com.example.eduservice.entity.frontvo.CourseWebVo;
 import com.example.eduservice.entity.vo.CourseInfoVo;
 import com.example.eduservice.entity.vo.CoursePublishVo;
 import com.example.eduservice.mapper.EduCourseMapper;
-import com.example.eduservice.service.EduChapterService;
-import com.example.eduservice.service.EduCourseDescriptionService;
-import com.example.eduservice.service.EduCourseService;
-import com.example.eduservice.service.EduVideoService;
+import com.example.eduservice.service.*;
+import com.example.eduservice.utils.IpUtil;
 import com.example.servicebase.exceptionhandler.EduException;
+import com.example.servicebase.service.RedisService;
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.OperatingSystem;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.DigestUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.example.servicebase.constant.CommonConstant.UNKNOWN;
+import static com.example.servicebase.constant.RedisConstant.*;
 
 /**
  * <p>
@@ -36,10 +44,21 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Autowired
     private EduCourseDescriptionService courseDescriptionService;
+
     @Autowired
     private EduVideoService videoService;
+
+    @Autowired
+    private EduSubjectService subjectService;
+
     @Autowired
     private EduChapterService chapterService;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public String saveCourseInfo(CourseInfoVo courseInfoVo) {
@@ -188,6 +207,44 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
             return courseList;
         }
 
+    }
+
+    @Override
+    public void report() {
+        String ipAddress = IpUtil.getIpAddress(request);
+        UserAgent userAgent = IpUtil.getUserAgent(request);
+        Browser browser = userAgent.getBrowser();
+        OperatingSystem operatingSystem = userAgent.getOperatingSystem();
+        String uuid = ipAddress + browser.getName() + operatingSystem.getName();
+        String md5 = DigestUtils.md5DigestAsHex(uuid.getBytes());
+        if (!redisService.sIsMember(UNIQUE_VISITOR, md5)) {
+            String ipSource = IpUtil.getIpSource(ipAddress);
+            if (StringUtils.isNotEmpty(ipSource)) {
+                String ipProvince = IpUtil.getIpProvince(ipSource);
+                redisService.hIncr(VISITOR_AREA, ipProvince, 1L);
+            } else {
+                redisService.hIncr(VISITOR_AREA, UNKNOWN, 1L);
+            }
+            redisService.incr(SITE_VIEWS_COUNT, 1);
+            redisService.sAdd(UNIQUE_VISITOR, md5);
+        }
+    }
+
+    @Override
+    public List<CategoryDTO> listCategories() {
+//        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+//        wrapper.select("subject_id as id","count(*) as lessonCount");
+//        wrapper.groupBy("subject_id");
+//        List<CategoryDTO> categoryDTOS = baseMapper.selectList(wrapper).stream().map(item -> {
+//            CategoryDTO categoryDTO = new CategoryDTO();
+//            BeanUtils.copyProperties(categoryDTO,item);
+//            EduSubject subject = subjectService.getById(item.getId());
+//            categoryDTO.setCategoryName(subject.getTitle());
+//            return categoryDTO;
+//        }).collect(Collectors.toList());
+//        System.err.println(categoryDTOS);
+        return baseMapper.listCategories();
+//        return categoryDTOS;
     }
 
 

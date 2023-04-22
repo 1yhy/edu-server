@@ -14,7 +14,7 @@ public class ScheduleTask {
     private StatisticsDailyService service;
 
     @Scheduled(cron = "0 0 1 * * ?")
-    public void task() {
-        service.registerCount(DateUtil.formatDate(DateUtil.addDays(new Date(), -1)));
+    public void viewCountTask() {
+        service.viewCountDaily(DateUtil.formatDate(DateUtil.addDays(new Date(), -1)));
     }
 }

@@ -1,6 +1,7 @@
 package com.example.educenter.controller;
 
 import com.example.commonutils.JwtUtils;
+import com.example.educenter.client.StatisticClient;
 import com.example.educenter.entity.UcenterMember;
 import com.example.educenter.service.UcenterMemberService;
 import com.example.educenter.utils.ConstantWxUtils;
@@ -12,8 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.websocket.server.PathParam;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 //@CrossOrigin
@@ -23,6 +27,9 @@ public class WxApiController {
     @Autowired
     private UcenterMemberService memberService;
 
+    @Autowired
+    private StatisticClient statisticClient;
+
     @GetMapping("login")
     public String getWxCode() {
         String baseUrl = "https://open.weixin.qq.com/connect/qrconnect" +
@@ -30,7 +37,7 @@ public class WxApiController {
                 "&redirect_uri=%s" +
                 "&response_type=code" +
                 "&scope=snsapi_login" +
-                "&state=%s" +
+//                "&state=%s" +
                 "#wechat_redirect";
 
         String redirectUrl = ConstantWxUtils.WX_OPEN_REDIRECT_URL;
@@ -40,16 +47,21 @@ public class WxApiController {
             e.printStackTrace();
         }
 
-        String state = "imhelen";//为了让大家能够使用我搭建的外网的微信回调跳转服务器，这里填写你在ngrok的前置域名
+//        String state = "imhelen";//为了让大家能够使用我搭建的外网的微信回调跳转服务器，这里填写你在ngrok的前置域名
 
-        String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl, "atiguigu");
+//        String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl, "atiguigu");
+        String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl);
+        // 登录统计人数加一
+        Date date = new Date();
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+        statisticClient.addOrUpdateLoginCount(simpleFormat.format(date));
 
         return "redirect:" + url;
 
     }
 
     @GetMapping("callback")
-    public String callback(String code, String state) {
+    public String callback(@PathParam("code") String code, @PathParam("state") String state) {
         try {
         //向认证服务器发送请求换取access_token
         String baseAccessTokenUrl =
@@ -92,7 +104,7 @@ public class WxApiController {
             }
 
             String jwtToken = JwtUtils.getJwtToken(member.getId(), member.getNickname());
-            return "redirect:http://43.139.73.193?token="+jwtToken;
+            return "redirect:http://localhost:8990?token="+jwtToken;
         } catch (Exception e) {
            throw new EduException(201,"登录失败");
         }

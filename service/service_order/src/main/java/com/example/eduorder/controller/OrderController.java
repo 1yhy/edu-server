@@ -2,7 +2,6 @@ package com.example.eduorder.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.commonutils.JwtUtils;
 import com.example.commonutils.R;
 import com.example.eduorder.entity.Order;
@@ -45,6 +44,13 @@ public class OrderController {
         wrapper.eq(Order::getMemberId,memberId);
         wrapper.eq(Order::getStatus,1);
         return orderService.count(wrapper)>0;
+    }
+
+    @GetMapping("orderCount")
+    public Integer orderCount(){
+        LambdaQueryWrapper<Order> wrapper =new LambdaQueryWrapper<>();
+        wrapper.eq(Order::getStatus,1);
+        return orderService.count(wrapper);
     }
 
 
