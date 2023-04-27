@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.commonutils.model.dto.CategoryDTO;
+import com.example.eduservice.client.OrderClient;
 import com.example.eduservice.entity.EduCourse;
 import com.example.eduservice.entity.EduCourseDescription;
+import com.example.eduservice.entity.EduSubject;
+import com.example.eduservice.entity.EduTeacher;
 import com.example.eduservice.entity.frontvo.CourseFrontVo;
 import com.example.eduservice.entity.frontvo.CourseWebVo;
 import com.example.eduservice.entity.vo.CourseInfoVo;
@@ -55,10 +58,16 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     private EduChapterService chapterService;
 
     @Autowired
+    private EduTeacherService teacherService;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private OrderClient orderClient;
 
     @Override
     public String saveCourseInfo(CourseInfoVo courseInfoVo) {
@@ -155,6 +164,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
                     break;
             }
         }
+        wrapper.eq("status","Normal");
         baseMapper.selectPage(pageCourse,wrapper);
 
         List<EduCourse> records = pageCourse.getRecords();
@@ -232,20 +242,74 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Override
     public List<CategoryDTO> listCategories() {
-//        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
-//        wrapper.select("subject_id as id","count(*) as lessonCount");
-//        wrapper.groupBy("subject_id");
-//        List<CategoryDTO> categoryDTOS = baseMapper.selectList(wrapper).stream().map(item -> {
-//            CategoryDTO categoryDTO = new CategoryDTO();
-//            BeanUtils.copyProperties(categoryDTO,item);
-//            EduSubject subject = subjectService.getById(item.getId());
-//            categoryDTO.setCategoryName(subject.getTitle());
-//            return categoryDTO;
-//        }).collect(Collectors.toList());
-//        System.err.println(categoryDTOS);
         return baseMapper.listCategories();
 //        return categoryDTOS;
     }
 
+    @Override
+    public List<EduCourse> getBoughtCourseList(String userId) {
+        List<String> boughtCourse = orderClient.getBoughtCourse(userId);
+        if(boughtCourse.size() > 0){
+            List<EduCourse> eduCourseList = baseMapper.selectBatchIds(boughtCourse);
+            return eduCourseList;
+        }
+        return null;
+    }
+
+
+    // 搜索课程
+    @Override
+    public Map<String, Object> searchCourse(Page<EduCourse> pageCourse, String keyword) {
+        QueryWrapper<EduSubject> subjectQueryWrapper = new QueryWrapper<>();
+        subjectQueryWrapper.like("title",keyword).select("id");
+        List<String> collect = subjectService.list(subjectQueryWrapper).stream().map(item -> item.getId()).collect(Collectors.toList());
+
+
+        QueryWrapper<EduTeacher> teacherQueryWrapper = new QueryWrapper<>();
+        teacherQueryWrapper.like("name",keyword).select("id");
+        List<String> teacherList = teacherService.list(teacherQueryWrapper).stream().map(item -> item.getId()).collect(Collectors.toList());
+
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.likeRight("title",keyword);
+        if (teacherList.size() > 0){
+            wrapper.or().in("teacher_id",teacherList);
+        }
+        if (collect.size() > 0){
+            wrapper.or().in("subject_id",collect).or().in("subject_parent_id",collect);
+        }
+        wrapper.eq("status","Normal");
+        baseMapper.selectPage(pageCourse,wrapper);
+
+        List<EduCourse> records = pageCourse.getRecords();
+        List<CourseWebVo> courseWebVoList = new ArrayList<>();
+        for (EduCourse record : records) {
+            CourseWebVo courseWebVo = new CourseWebVo();
+            BeanUtils.copyProperties(record, courseWebVo);
+            courseWebVo.setTeacherName(teacherService.getById(record.getTeacherId()).getName());
+
+            // 课程描述是否为空
+            EduCourseDescription courseDescriptionServiceById = courseDescriptionService.getById(record.getId());
+            if(courseDescriptionServiceById != null){
+                courseWebVo.setDescription(courseDescriptionServiceById.getDescription());
+            }
+            courseWebVoList.add(courseWebVo);
+        }
+        long current = pageCourse.getCurrent();
+        long pages = pageCourse.getPages();
+        long size = pageCourse.getSize();
+        long total = pageCourse.getTotal();
+        boolean hasNext = pageCourse.hasNext();
+        boolean hasPrevious = pageCourse.hasPrevious();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("items", courseWebVoList);
+        map.put("current", current);
+        map.put("pages", pages);
+        map.put("size", size);
+        map.put("total", total);
+        map.put("hasNext", hasNext);
+        map.put("hasPrevious", hasPrevious);
+        return map;
+    }
 
 }

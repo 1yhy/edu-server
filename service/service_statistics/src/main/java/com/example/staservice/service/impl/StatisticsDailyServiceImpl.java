@@ -156,15 +156,17 @@ public class StatisticsDailyServiceImpl extends ServiceImpl<StatisticsDailyMappe
     public AdminInfoDTO getAdminInfo() {
         Object count = redisService.get(SITE_VIEWS_COUNT);
         Integer viewsCount = Integer.parseInt(Optional.ofNullable(count).orElse(0).toString());
-        System.err.println("viewsCount = " + viewsCount);
+
         Integer userCount = ucenterClient.userCount();
-        System.err.println("userCount = " + userCount);
+
         Integer orderCount = orderClient.orderCount();
-        System.err.println("orderCount = " + orderCount);
+
         Integer lessonCount = eduClient.lessonCount();
-        System.err.println("lessonCount = " + lessonCount);
+
         List<UniqueViewDTO> uniqueViews = this.listUniqueViews();
+
         List<CategoryDTO> categoryDTOs = eduClient.listCategories();
+
         List<LessonViewDTO> lessonViewDTOs = eduClient.lessonViewCount();
         AdminInfoDTO adminInfoDTO = AdminInfoDTO.builder()
                 .viewsCount(viewsCount)

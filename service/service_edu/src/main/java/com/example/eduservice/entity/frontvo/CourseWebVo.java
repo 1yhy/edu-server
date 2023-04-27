@@ -47,6 +47,9 @@ public class CourseWebVo implements Serializable {
     @ApiModelProperty(value = "讲师头像")
     private String avatar;
 
+    @ApiModelProperty(value = "课件资源")
+    private String resources;
+
     @ApiModelProperty(value = "课程类别ID")
     private String subjectLevelOneId;
 

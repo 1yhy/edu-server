@@ -41,25 +41,27 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         String password = member.getPassword();
 
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(password)) {
-            throw new EduException(201, "登录失败");
+            throw new EduException(201, "请输入用户名或密码");
         }
 
         QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
         wrapper.eq("mobile", mobile);
+        wrapper.eq("is_deleted", 0);
         UcenterMember mobileMember = baseMapper.selectOne(wrapper);
+
         if (mobileMember == null) {
-            throw new EduException(201, "登录失败");
+            throw new EduException(201, "账号不存在");
         }
 
         if (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(mobileMember.getPassword())) {
             System.out.println(DigestUtils.md5DigestAsHex(password.getBytes()));
             System.out.println(mobileMember.getPassword());
             System.out.println(DigestUtils.md5DigestAsHex("123456".getBytes()));
-            throw new EduException(201, "登录失败");
+            throw new EduException(201, "密码错误");
         }
 
         if (mobileMember.getIsDisabled()) {
-            throw new EduException(201, "登录失败");
+            throw new EduException(201, "您的账号已被禁用，请联系管理员了解详情");
         }
 
         String jwtToken = JwtUtils.getJwtToken(mobileMember.getId(), mobileMember.getNickname());
@@ -78,18 +80,18 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         String password = registerVo.getPassword();
 
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(password) || StringUtils.isEmpty(code) || StringUtils.isEmpty(nickname)) {
-            throw new EduException(201, "注册失败");
+            throw new EduException(201, "请完善信息");
         }
 
         String redisCode = template.opsForValue().get(mobile);
         if (!code.equals(redisCode)) {
-            throw new EduException(201, "注册失败");
+            throw new EduException(201, "验证码错误");
         }
 
         QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
         wrapper.eq("mobile", mobile);
         if (baseMapper.selectCount(wrapper) > 0) {
-            throw new EduException(201, "注册失败");
+            throw new EduException(201, "用户已存在");
         }
             UcenterMember member = new UcenterMember();
             member.setMobile(mobile);
@@ -115,6 +117,18 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
     @Override
     public Integer countRegister(String day) {
         return baseMapper.countRegister(day);
+    }
+
+    @Override
+    public boolean updateInfo(UcenterMember member) {
+        if(!StringUtils.isEmpty(member.getMobile())) {
+            QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
+            wrapper.eq("mobile", member.getMobile());
+            if (baseMapper.selectCount(wrapper) > 0) {
+                throw new EduException(201, "手机号已存在");
+            }
+        }
+        return  baseMapper.updateById(member) == 1;
     }
 
 

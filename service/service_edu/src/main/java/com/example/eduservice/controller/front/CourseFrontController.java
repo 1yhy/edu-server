@@ -63,6 +63,22 @@ public class CourseFrontController {
         return R.ok().data(map);
     }
 
+
+    /**
+     * Gets front course list.
+     *
+     * @param page          the page
+     * @param limit         the limit
+     * @param keyword       the search keyword
+     * @return the front course list
+     */
+    @PostMapping("searchCourse/{page}/{limit}/{keyword}")
+    public R searchCourse(@PathVariable long page, @PathVariable long limit,
+                          @PathVariable String keyword){
+        Page<EduCourse> pageCourse = new Page<>(page,limit);
+        Map<String,Object> map =  courseService.searchCourse(pageCourse,keyword);
+        return R.ok().data(map);
+    }
     /**
      * Get front course info r.
      *
@@ -135,6 +151,13 @@ public class CourseFrontController {
     public R updateCourseBuyCount(@PathVariable String id){
         EduCourse eduCourse = courseService.getById(id);
         eduCourse.setBuyCount(eduCourse.getBuyCount()+1);
+        courseService.updateById(eduCourse);
         return R.ok();
+    }
+
+    @GetMapping("getBoughtCourseList/{userId}")
+    public R getBoughtCourseList(@PathVariable String userId){
+        List<EduCourse> boughtCourseList = courseService.getBoughtCourseList(userId);
+        return R.ok().data("courseList",boughtCourseList);
     }
 }

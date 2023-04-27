@@ -110,7 +110,7 @@ public class EduCourseController {
     @GetMapping("lessonViewCount")
     public List<LessonViewDTO> lessonViewCount() {
         QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
-        wrapper.eq("status","Normal").select("id","title","view_count");
+        wrapper.eq("status","Normal").select("id","title","view_count").orderByDesc("view_count").last("limit 8");
         List<LessonViewDTO> lessonViewCountDTOS = courseService.list(wrapper).stream().map(course -> {
             LessonViewDTO lessonViewCountDTO = new LessonViewDTO();
             lessonViewCountDTO.setId(course.getId());

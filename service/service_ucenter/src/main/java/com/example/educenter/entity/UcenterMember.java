@@ -1,15 +1,14 @@
 package com.example.educenter.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.util.Date;
-import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -43,7 +42,7 @@ public class UcenterMember implements Serializable {
     @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    @ApiModelProperty(value = "性别 1 女，2 男")
+    @ApiModelProperty(value = "性别 0 女，1 男")
     private Integer sex;
 
     @ApiModelProperty(value = "年龄")

@@ -51,10 +51,7 @@ public class WxApiController {
 
 //        String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl, "atiguigu");
         String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl);
-        // 登录统计人数加一
-        Date date = new Date();
-        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
-        statisticClient.addOrUpdateLoginCount(simpleFormat.format(date));
+
 
         return "redirect:" + url;
 
@@ -102,6 +99,15 @@ public class WxApiController {
                 member.setAvatar(headImgUrl);
                 memberService.save(member);
             }
+
+            if (member.getIsDisabled()) {
+                throw new EduException(201, "您的账号已被禁用，请联系管理员了解详情");
+            }
+
+            // 登录统计人数加一
+            Date date = new Date();
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd");
+            statisticClient.addOrUpdateLoginCount(simpleFormat.format(date));
 
             String jwtToken = JwtUtils.getJwtToken(member.getId(), member.getNickname());
             return "redirect:http://localhost:8990?token="+jwtToken;

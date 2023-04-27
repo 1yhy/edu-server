@@ -38,4 +38,8 @@ public interface EduCourseService extends IService<EduCourse> {
   void report();
 
     List<CategoryDTO> listCategories();
+
+  List<EduCourse> getBoughtCourseList(String userId);
+
+  Map<String, Object> searchCourse(Page<EduCourse> pageCourse, String keyword);
 }
