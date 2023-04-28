@@ -54,9 +54,6 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         }
 
         if (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(mobileMember.getPassword())) {
-            System.out.println(DigestUtils.md5DigestAsHex(password.getBytes()));
-            System.out.println(mobileMember.getPassword());
-            System.out.println(DigestUtils.md5DigestAsHex("123456".getBytes()));
             throw new EduException(201, "密码错误");
         }
 

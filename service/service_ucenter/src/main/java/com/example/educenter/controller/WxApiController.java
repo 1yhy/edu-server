@@ -37,7 +37,6 @@ public class WxApiController {
                 "&redirect_uri=%s" +
                 "&response_type=code" +
                 "&scope=snsapi_login" +
-//                "&state=%s" +
                 "#wechat_redirect";
 
         String redirectUrl = ConstantWxUtils.WX_OPEN_REDIRECT_URL;
@@ -46,15 +45,9 @@ public class WxApiController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-//        String state = "imhelen";//为了让大家能够使用我搭建的外网的微信回调跳转服务器，这里填写你在ngrok的前置域名
-
-//        String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl, "atiguigu");
         String url = String.format(baseUrl, ConstantWxUtils.WX_OPEN_APP_ID, redirectUrl);
 
-
         return "redirect:" + url;
-
     }
 
     @GetMapping("callback")

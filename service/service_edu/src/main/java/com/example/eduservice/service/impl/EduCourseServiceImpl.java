@@ -260,15 +260,18 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     // 搜索课程
     @Override
     public Map<String, Object> searchCourse(Page<EduCourse> pageCourse, String keyword) {
+        // 1.根据关键字查询课程分类
         QueryWrapper<EduSubject> subjectQueryWrapper = new QueryWrapper<>();
         subjectQueryWrapper.like("title",keyword).select("id");
         List<String> collect = subjectService.list(subjectQueryWrapper).stream().map(item -> item.getId()).collect(Collectors.toList());
 
 
+        // 2.根据关键字查询讲师
         QueryWrapper<EduTeacher> teacherQueryWrapper = new QueryWrapper<>();
         teacherQueryWrapper.like("name",keyword).select("id");
         List<String> teacherList = teacherService.list(teacherQueryWrapper).stream().map(item -> item.getId()).collect(Collectors.toList());
 
+        // 3.根据关键字查询课程
         QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
         wrapper.likeRight("title",keyword);
         if (teacherList.size() > 0){

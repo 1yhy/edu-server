@@ -31,6 +31,7 @@ import java.util.Map;
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
     @Autowired
     private EduClient eduClient;
+
     @Autowired
     private UcenterClient ucenterClient;
 
@@ -47,7 +48,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setCourseId(courseId);
         order.setCourseTitle(courseInfoOrder.getTitle());
         order.setCourseCover(courseInfoOrder.getCover());
-        order.setTeacherName("test");
+        order.setTeacherId(courseInfoOrder.getTeacherId());
         order.setTotalFee(courseInfoOrder.getPrice());
         order.setMemberId(memberId);
         order.setMobile(userInfoOrder.getMobile());

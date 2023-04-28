@@ -1,6 +1,7 @@
 package com.example.educenter.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.commonutils.JwtUtils;
@@ -12,6 +13,7 @@ import com.example.educenter.entity.vo.UserQuery;
 import com.example.educenter.service.UcenterMemberService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,5 +118,18 @@ public class UcenterMemberController {
         List<UcenterMember> records = pageUser.getRecords();
         return R.ok().data("total", total).data("rows", records);
     }
+
+
+    @DeleteMapping("deleteUser/{id}")
+    public R deleteUser(@PathVariable String id){
+        LambdaQueryWrapper<UcenterMember> wrapper =new LambdaQueryWrapper<>();
+        wrapper.eq(UcenterMember::getId,id);
+        if(ObjectUtils.isEmpty(memberService.getOne(wrapper))){
+            return R.error().message("用户不存在");
+        }
+        boolean remove = memberService.remove(wrapper);
+        return remove?R.ok():R.error();
+    }
+
 }
 

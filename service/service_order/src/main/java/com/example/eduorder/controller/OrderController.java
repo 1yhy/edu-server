@@ -10,6 +10,7 @@ import com.example.eduorder.entity.Order;
 import com.example.eduorder.entity.vo.OrderQuery;
 import com.example.eduorder.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +76,17 @@ public class OrderController {
         LambdaQueryWrapper<Order> wrapper =new LambdaQueryWrapper<>();
         wrapper.eq(Order::getStatus,1);
         return orderService.count(wrapper);
+    }
+
+    @DeleteMapping("deleteOrder/{orderNo}")
+    public R deleteOrder(@PathVariable String orderNo){
+        LambdaQueryWrapper<Order> wrapper =new LambdaQueryWrapper<>();
+        wrapper.eq(Order::getOrderNo,orderNo);
+        if(ObjectUtils.isEmpty(orderService.getOne(wrapper))){
+            return R.error().message("订单不存在");
+        }
+        boolean remove = orderService.remove(wrapper);
+        return remove?R.ok():R.error();
     }
 
 
