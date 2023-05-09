@@ -1,0 +1,42 @@
+# 端口号
+server:
+  port: 8009
+
+spring:
+  application:
+    name: service-acl
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://服务器地址:3306/edu?serverTimezone=GMT%2B8
+    username: #数据库名
+    password: #数据库密码
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: Hikari
+      max-lifetime: 55000
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  redis:
+    host: #服务器地址
+    port: 6379
+    database: 0
+    timeout: 1800000
+    password: #redis密码
+    lettuce:
+      pool:
+        max-idle: 5
+        min-idle: 0
+        max-wait: -1
+        max-active: 20
+
+
+mybatis-plus:
+  mapper-locations: com/example/aclservice/mapper/xml/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

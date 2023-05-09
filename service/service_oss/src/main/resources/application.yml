@@ -1,0 +1,32 @@
+# 端口号
+server:
+  port: 8002
+
+spring:
+  application:
+    name: service-oss
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://服务器地址:3306/edu?serverTimezone=GMT%2B8
+    username: #数据库名
+    password: #数据库密码
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: Hikari
+      max-lifetime: 55000
+  servlet:
+    multipart:
+      max-file-size: 5210MB
+      max-request-size: 5210MB
+
+aliyun:
+  oss:
+    file:
+      endpoint: #自己阿里云endpoint:比如oss-cn-guangzhou.aliyuncs.com
+      keyid: #自己阿里云keyid
+      keysecret: #自己阿里云keysecret
+      bucketname: #自己阿里云bucketname

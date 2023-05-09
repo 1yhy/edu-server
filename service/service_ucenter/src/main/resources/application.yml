@@ -1,0 +1,56 @@
+# 端口号
+server:
+  port: 8160
+
+spring:
+  application:
+    name: service-ucenter
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://服务器地址:3306/edu?serverTimezone=GMT%2B8
+    username: #数据库名
+    password: #数据库密码
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: Hikari
+      max-lifetime: 55000
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  redis:
+    host: #服务器地址
+    port: 6379
+    database: 0
+    timeout: 1800000
+    password: #redis密码
+    lettuce:
+      pool:
+        max-idle: 5
+        min-idle: 0
+        max-active: 20
+        max-wait: -1
+
+
+mybatis-plus:
+  mapper-locations: com/example/educenter/mapper/xml/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# wx:
+#   open:
+#     app_id: wxed9954c01bb89b47
+#     app_secret: a7482517235173ddb4083788de60b90e
+#     redirect_url: http://localhost:8160/educenter/api/ucenter/wx/callback
+
+wx:
+  open:
+    app_id: wx6082cae047c1c896
+    app_secret: 05a617bd0a5c5ed6a887b8de584d292b
+    redirect_url: http://localhost:8160/educenter/api/ucenter/wx/callback
