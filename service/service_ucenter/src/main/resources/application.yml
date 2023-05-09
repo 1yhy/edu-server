@@ -43,14 +43,9 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
-# wx:
-#   open:
-#     app_id: wxed9954c01bb89b47
-#     app_secret: a7482517235173ddb4083788de60b90e
-#     redirect_url: http://localhost:8160/educenter/api/ucenter/wx/callback
-
 wx:
   open:
-    app_id: wx6082cae047c1c896
-    app_secret: 05a617bd0a5c5ed6a887b8de584d292b
+    app_id: wxed9954c01bb89b47
+    app_secret: a7482517235173ddb4083788de60b90e
     redirect_url: http://localhost:8160/educenter/api/ucenter/wx/callback
+
