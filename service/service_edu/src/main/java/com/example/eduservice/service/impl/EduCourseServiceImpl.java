@@ -75,7 +75,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         BeanUtils.copyProperties(courseInfoVo,eduCourse);
         int insert = baseMapper.insert(eduCourse);
         if(insert==0){
-            throw new EduException(2001,"添加课程信息失败");
+            throw new EduException(201,"添加课程信息失败");
         }
 
         String cid = eduCourse.getId();

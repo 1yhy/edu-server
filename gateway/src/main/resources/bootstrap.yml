@@ -2,10 +2,10 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 43.139.73.193:8848
+        server-addr: #服务器地址nacos地址
         file-extension: yaml
-        namespace: cc4e4a1d-6e94-4829-812a-0591a9e8d7bf
+        namespace: #命名空间
       discovery:
-        server-addr: 43.139.73.193:8848
+        server-addr: #服务器地址nacos地址
   application:
     name: service-gateway

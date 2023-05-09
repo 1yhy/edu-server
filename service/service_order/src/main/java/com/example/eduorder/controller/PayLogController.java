@@ -55,7 +55,7 @@ public class PayLogController {
         String notifyXml = StreamUtils.inputStream2String(inputStream, "utf-8");
         log.info("\n notifyXml = \n " + notifyXml);
         // 验签：验证签名是否正确
-        if (WXPayUtil.isSignatureValid(notifyXml, "MkFanHCM26N6ZI4aMBVZoQwCaD6Ms7Ew")) {
+        if (WXPayUtil.isSignatureValid(notifyXml, "")) {
             // 解析返回结果
             Map<String, String> notifyMap = WXPayUtil.xmlToMap(notifyXml);
             // 判断支付是否成功

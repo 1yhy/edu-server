@@ -174,68 +174,11 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
 
 
-    //把返回所有菜单list集合进行封装的方法
-//    public static List<Permission> bulidPermission(List<Permission> permissionList) {
-//
-//        //创建list集合，用于数据最终封装
-//        List<Permission> finalNode = new ArrayList<>();
-//        //把所有菜单list集合遍历，得到顶层菜单 pid=0菜单，设置level是1
-//        for(Permission permissionNode : permissionList) {
-//            //得到顶层菜单 pid=0菜单
-//            if("0".equals(permissionNode.getPid())) {
-//                //设置顶层菜单的level是1
-//                permissionNode.setLevel(1);
-//                //根据顶层菜单，向里面进行查询子菜单，封装到finalNode里面
-//                finalNode.add(selectChildren(permissionNode,permissionList));
-//            }
-//        }
-//        return finalNode;
-//    }
-//
-//    private static Permission selectChildren(Permission permissionNode, List<Permission> permissionList) {
-//        //1 因为向一层菜单里面放二层菜单，二层里面还要放三层，把对象初始化
-//        permissionNode.setChildren(new ArrayList<Permission>());
-//
-//        //2 遍历所有菜单list集合，进行判断比较，比较id和pid值是否相同
-//        for(Permission it : permissionList) {
-//            //判断 id和pid值是否相同
-//            if(permissionNode.getId().equals(it.getPid())) {
-//                //把父菜单的level值+1
-//                int level = permissionNode.getLevel()+1;
-//                it.setLevel(level);
-//                //如果children为空，进行初始化操作
-//                if(permissionNode.getChildren() == null) {
-//                    permissionNode.setChildren(new ArrayList<Permission>());
-//                }
-//                //把查询出来的子菜单放到父菜单里面
-//                permissionNode.getChildren().add(selectChildren(it,permissionList));
-//            }
-//        }
-//        return permissionNode;
-//    }
-
-
-    //2 根据当前菜单id，查询菜单里面子菜单id，封装到list集合
-//    private void selectPermissionChildById(String id, List<String> idList) {
-//        //查询菜单里面子菜单id
-//        QueryWrapper<Permission>  wrapper = new QueryWrapper<>();
-//        wrapper.eq("pid",id);
-//        wrapper.select("id");
-//        List<Permission> childIdList = baseMapper.selectList(wrapper);
-//        //把childIdList里面菜单id值获取出来，封装idList里面，做递归查询
-//        childIdList.stream().forEach(item -> {
-//            //封装idList里面
-//            idList.add(item.getId());
-//            //递归查询
-//            this.selectPermissionChildById(item.getId(),idList);
-//        });
-//    }
-
     //给角色分配菜单
     @Override
     public void saveRolePermissionRealtionShip(String roleId, String[] permissionIds) {
         //删除角色之前所有菜单
-        QueryWrapper wrapper = new QueryWrapper<>();
+        QueryWrapper<RolePermission> wrapper = new QueryWrapper<>();
         wrapper.eq("role_id",roleId);
         rolePermissionService.remove(wrapper);
         //roleId角色id

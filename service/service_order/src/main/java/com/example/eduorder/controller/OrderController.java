@@ -92,7 +92,7 @@ public class OrderController {
 
     //条件查询带分页的方法
     @PostMapping("pageOrderCondition/{current}/{limit}")
-    public R pageTeacherCondition(@PathVariable long current, @PathVariable long limit, @RequestBody(required = false) OrderQuery orderQuery) {
+    public R pageOrderCondition(@PathVariable long current, @PathVariable long limit, @RequestBody(required = false) OrderQuery orderQuery) {
         Page<Order> pageOrder = new Page<>(current, limit);
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
         //多条件组合查询
@@ -108,25 +108,31 @@ public class OrderController {
             wrapper.eq("order_no", orderNo);
         }
 
+        // 订单状态
         if (!StringUtils.isEmpty(status)) {
             wrapper.eq("status", status);
         }
 
+        // 支付方式
         if (!StringUtils.isEmpty(payType)) {
             wrapper.eq("pay_type", payType);
         }
 
+        // 课程id
         if (!StringUtils.isEmpty(courseId)) {
             wrapper.eq("course_id", courseId);
         }
 
+        // 用户id
         if (!StringUtils.isEmpty(memberId)) {
             wrapper.eq("member_id", memberId);
         }
 
+        // 创建开始时间
         if (!StringUtils.isEmpty(begin)) {
             wrapper.ge("gmt_create", begin);
         }
+        // 创建结束时间
         if (!StringUtils.isEmpty(end)) {
             wrapper.le("gmt_create", end);
         }

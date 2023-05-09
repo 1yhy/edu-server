@@ -42,8 +42,8 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
             Map m = new HashMap<>();
 //            m.put("appid", "wx74862e0dfcf69954");
 //            m.put("mch_id", "1558950191");
-            m.put("appid", "wx011c535fecded0af");
-            m.put("mch_id", "1642365916");
+            m.put("appid", "");
+            m.put("mch_id", "");
             m.put("nonce_str", WXPayUtil.generateNonceStr());
             m.put("body", order.getCourseTitle());
             m.put("out_trade_no", orderNo);
@@ -59,7 +59,7 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
 
             HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
 //            client.setXmlParam(WXPayUtil.generateSignedXml(m, "T6m9iK73b0kn9g5v426MKfHQH7X8rKwb"));
-            client.setXmlParam(WXPayUtil.generateSignedXml(m, "MkFanHCM26N6ZI4aMBVZoQwCaD6Ms7Ew"));
+            client.setXmlParam(WXPayUtil.generateSignedXml(m, ""));
             client.setHttps(true);
             client.post();
 
@@ -85,19 +85,19 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
         try {
             //1、封装参数
             Map m = new HashMap<>();
-//            m.put("appid", "wx74862e0dfcf69954");
-//            m.put("mch_id", "1558950191");
-            m.put("appid", "wx011c535fecded0af");
-            m.put("mch_id", "1642365916");
+            m.put("appid", "wx74862e0dfcf69954");
+            m.put("mch_id", "1558950191");
+//            m.put("appid", "");
+//            m.put("mch_id", "");
             m.put("out_trade_no", orderNo);
             m.put("nonce_str", WXPayUtil.generateNonceStr());
             //2、设置请求
             HttpClient client = new
                     HttpClient("https://api.mch.weixin.qq.com/pay/orderquery");
-            client.setXmlParam(WXPayUtil.generateSignedXml(m,
-                    "MkFanHCM26N6ZI4aMBVZoQwCaD6Ms7Ew"));
 //            client.setXmlParam(WXPayUtil.generateSignedXml(m,
-//                    "T6m9iK73b0kn9g5v426MKfHQH7X8rKwb"));
+//                    ""));
+            client.setXmlParam(WXPayUtil.generateSignedXml(m,
+                    "T6m9iK73b0kn9g5v426MKfHQH7X8rKwb"));
             client.setHttps(true);
             client.post();
             //3、返回第三方的数据

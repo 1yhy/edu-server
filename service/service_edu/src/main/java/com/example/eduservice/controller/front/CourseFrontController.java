@@ -158,6 +158,9 @@ public class CourseFrontController {
     @GetMapping("getBoughtCourseList/{userId}")
     public R getBoughtCourseList(@PathVariable String userId){
         List<EduCourse> boughtCourseList = courseService.getBoughtCourseList(userId);
+        if (boughtCourseList == null){
+            return R.ok().message("该用户没有购买课程");
+        }
         return R.ok().data("courseList",boughtCourseList);
     }
 }

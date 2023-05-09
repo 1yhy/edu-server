@@ -118,13 +118,13 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
 
     @Override
     public boolean updateInfo(UcenterMember member) {
-        if(!StringUtils.isEmpty(member.getMobile())) {
-            QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
-            wrapper.eq("mobile", member.getMobile());
-            if (baseMapper.selectCount(wrapper) > 0) {
-                throw new EduException(201, "手机号已存在");
-            }
-        }
+//        if(!StringUtils.isEmpty(member.getMobile())) {
+//            QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
+//            wrapper.eq("mobile", member.getMobile());
+//            if (baseMapper.selectCount(wrapper) > 0) {
+//                throw new EduException(201, "手机号已存在");
+//            }
+//        }
         return  baseMapper.updateById(member) == 1;
     }
 

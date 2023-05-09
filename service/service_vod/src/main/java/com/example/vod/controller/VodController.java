@@ -58,7 +58,7 @@ public class VodController {
             String playAuth = response.getPlayAuth();
             return R.ok().data("playAuth",playAuth);
         }catch (Exception e) {
-            throw new EduException(201, "获取凭证失败");
+            throw new EduException(201, "视频播放出错");
         }
     }
 
