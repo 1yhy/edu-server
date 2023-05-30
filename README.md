@@ -26,11 +26,8 @@
 
 ## 前后端代码地址
 
-- gitee码云代码地址：
 - gitee前台代码链接：[https://gitee.com/yanghongyu2001/edu_front.git](https://gitee.com/yanghongyu2001/edu_front.git)
 - gitee后台代码链接：[https://gitee.com/yanghongyu2001/edu_admin.git](https://gitee.com/yanghongyu2001/edu_admin.git)
-- github前台代码链接：
-- github后台代码链接：
 
 ## 相关技术
 
